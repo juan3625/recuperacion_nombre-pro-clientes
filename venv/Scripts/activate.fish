@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV 'C:\Users\MSI 11\Desktop\nombre pro clientes\venv'
+set -gx VIRTUAL_ENV 'C:\Users\Sena1234\Downloads\Nueva carpeta\nombre-pro-clientes\venv'
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/"Scripts $PATH

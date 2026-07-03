@@ -4,20 +4,20 @@ from .transacciones import Transaccion
 from .clientes import Cliente, ClienteLeer
 from datetime import datetime
 
+
 class FacturaBase(SQLModel):
-    fecha: str = Field(default=datetime.now())
+    fecha: datetime = Field(default_factory=datetime.now)
     #cliente: Cliente 
     #transacciones: list[Transaccion] = []
 
     
-    @computed_field
-    @property
-    def vr_total(self) -> float:
-
+@computed_field
+@property
+def vr_total(self) -> float:
         total_factura = 0.0
-        if self.transacciones == None:
-             return total_factura
-        
+        if not self.transacciones:
+            return total_factura
+
         for transaccion in self.transacciones:
             total_factura += transaccion.vr_unitario * transaccion.cantidad
 

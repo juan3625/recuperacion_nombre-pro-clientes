@@ -18,14 +18,14 @@ async def listar_facturas(sesion: Session_dependencia):
 
 
 @rutas_facturas.get("/facturas{factura_id}", response_model=Factura)
-async def listar_factura(factura_id: int): 
-    for i, obj_factura in enumerate(lista_facturas):
-        if obj_factura.id == factura_id:
-            return obj_factura
-    raise HTTPException(
-        status_code=status.HTTP_400_BAD_REQUEST,
-        detail=f"La factra con id {factura_id}, no esxiste,"
-    )
+async def listar_factura(factura_id: int, sesion: Session_dependencia):
+    factura_encontrada = sesion.get(Factura, factura_id)
+    if not factura_encontrada:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"La factura con id {factura_id}, no existe",
+        )
+    return factura_encontrada
 
 
 

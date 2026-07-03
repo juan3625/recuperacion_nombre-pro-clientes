@@ -18,18 +18,18 @@ async def listar_Transacciones(sesion: Session_dependencia):
     return sesion.exec(select(Transaccion)).all()
 
 
-@rutas_transacciones.get("/transacciones/{id_transacciones}", response_model=Transaccion)
-async def listar_Transaccion(id_transaccion: int):
-    for transaccion in lista_transacciones:
-        if transaccion.id == id_transaccion:
-            return transaccion
+@rutas_transacciones.get("/transacciones/{id_transaccion}", response_model=Transaccion)
+async def listar_Transaccion(id_transaccion: int, sesion: Session_dependencia):
+    transaccion_encontrada = sesion.get(Transaccion, id_transaccion)
+    if transaccion_encontrada:
+        return transaccion_encontrada
     raise HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST,
         detail=f"La transaccion con id {id_transaccion}, no existe."
     )
 
 
-@rutas_transacciones.post("/transacciones{id_transacciones}", response_model=Transaccion)
+@rutas_transacciones.post("/transacciones/{factura_id}", response_model=Transaccion)
 async def crear_Transaccion(factura_id: int, datos_transaccion: TransaccionCrear, sesion: Session_dependencia):
      
      factura_encontrada = sesion.get(Factura, factura_id)
@@ -49,11 +49,33 @@ async def crear_Transaccion(factura_id: int, datos_transaccion: TransaccionCrear
      return transaccion_val
 
 
-@rutas_transacciones.patch("/transacciones{id_transacciones}", response_model=Transaccion)
-async def editar_Transaccion(id_transaccion: int, datos_transaccion: Transaccion):
-    pass
+@rutas_transacciones.patch("/transacciones/{id_transaccion}", response_model=Transaccion)
+async def editar_Transaccion(id_transaccion: int, datos_transaccion: TransaccionEditar, sesion: Session_dependencia):
+    transaccion_encontrada = sesion.get(Transaccion, id_transaccion)
+    if not transaccion_encontrada:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"La transaccion con id {id_transaccion}, no existe."
+        )
+
+    datos_nuevos = datos_transaccion.model_dump(exclude_unset=True)
+    transaccion_encontrada.sqlmodel_update(datos_nuevos)
+
+    sesion.add(transaccion_encontrada)
+    sesion.commit()
+    sesion.refresh(transaccion_encontrada)
+    return transaccion_encontrada
 
 
-@rutas_transacciones.delete("/transacciones{id_transacciones}", response_model=Transaccion)
-async def eliminar_Transaccion(id_transaccion: int):
-    pass
+@rutas_transacciones.delete("/transacciones/{id_transaccion}", response_model=Transaccion)
+async def eliminar_Transaccion(id_transaccion: int, sesion: Session_dependencia):
+    transaccion_encontrada = sesion.get(Transaccion, id_transaccion)
+    if not transaccion_encontrada:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"La transaccion con id {id_transaccion}, no existe."
+        )
+
+    sesion.delete(transaccion_encontrada)
+    sesion.commit()
+    return transaccion_encontrada
