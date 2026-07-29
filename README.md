@@ -1,185 +1,91 @@
-# 📦 PROYECTO_Clientes — API REST con FastAPI
+# Plan de Mejoramiento Actualizado
 
-API REST desarrollada con **FastAPI**, **SQLModel** y **SQLite** para la gestión de clientes, facturas y transacciones. Proyecto académico realizado como parte del programa de formación en el **SENA**, con el objetivo de poner en práctica el desarrollo de APIs REST, modelado relacional de datos y persistencia en base de datos con Python.
+Proyecto académico desarrollado en el marco de la formación del **SENA**. Consiste en una API REST construida con **FastAPI** para la gestión de usuarios, órdenes e ítems de orden, utilizando **SQLModel** como ORM sobre una base de datos SQLite.
 
----
+## 📋 Descripción
 
-## 📚 Contexto académico
+Esta API permite administrar el ciclo completo de información de un sistema de órdenes:
 
-Este proyecto fue desarrollado durante el proceso de aprendizaje del programa de formación del SENA, como ejercicio práctico para aplicar los siguientes conceptos:
-
-- Diseño y construcción de una API REST con FastAPI.
-- Definición de modelos de datos y relaciones (uno a muchos) usando SQLModel.
-- Persistencia de datos en una base de datos relacional (SQLite).
-- Organización de un proyecto backend en módulos (enrutadores y modelos).
-- Uso de control de versiones con Git y GitHub.
-
----
+- **Usuarios**: registro y administración de las personas que generan órdenes.
+- **Órdenes**: creación y gestión de órdenes asociadas a un usuario, con cálculo automático del total.
+- **Ítems de orden**: productos o conceptos individuales que componen cada orden.
 
 ## 🛠️ Tecnologías utilizadas
 
-- **Python 3.14**
-- **FastAPI** — framework para construir la API
-- **SQLModel** — ORM que combina SQLAlchemy y Pydantic para el modelado de datos
-- **SQLite** — motor de base de datos relacional, usado en desarrollo
-- **Pydantic v2** — validación de datos
-- **Uvicorn** — servidor ASGI para ejecutar la aplicación
+- [Python 3.14](https://www.python.org/)
+- [FastAPI](https://fastapi.tiangolo.com/) — framework para construir la API
+- [SQLModel](https://sqlmodel.tiangolo.com/) — ORM basado en Pydantic y SQLAlchemy
+- [Uvicorn](https://www.uvicorn.org/) — servidor ASGI para correr la aplicación
+- SQLite — base de datos
 
----
-
-## 📂 Estructura del proyecto
+## 📁 Estructura del proyecto
 
 ```
-PROYECTO_Clientes/
+nombre-pro-clientes/
 ├── app/
-│   ├── main.py                  # Punto de entrada de la API
-│   ├── conexion_bd.py           # Configuración y conexión a la base de datos
-│   ├── bd_clientes.squlite3     # Base de datos SQLite (generada automáticamente)
-│   ├── enrutadores/
-│   │   ├── clientes.py          # Rutas (endpoints) de Cliente
-│   │   ├── facturas.py          # Rutas (endpoints) de Factura
-│   │   └── transacciones.py     # Rutas (endpoints) de Transaccion
-│   └── modelos/
-│       ├── clientes.py          # Modelo de datos de Cliente
-│       ├── facturas.py          # Modelo de datos de Factura
-│       └── transacciones.py     # Modelo de datos de Transaccion
-├── venv/                        # Entorno virtual (no incluido en git)
-├── .gitignore
-├── requeriments.txt
+│   ├── main.py                  # Punto de entrada de la aplicación
+│   ├── conexion_bd.py           # Configuración de la conexión a la base de datos
+│   ├── enrutadores/             # Rutas / endpoints de la API
+│   │   ├── usuarios.py
+│   │   ├── ordenes.py
+│   │   └── items_orden.py
+│   └── modelos/                 # Modelos de datos (SQLModel)
+│       ├── usuarios.py
+│       ├── ordenes.py
+│       └── items_orden.py
+├── requeriments.txt             # Dependencias del proyecto
 └── README.md
 ```
 
----
+## 🚀 Instalación y ejecución
 
-## ⚙️ Instalación y ejecución
+1. Clona el repositorio:
+   ```bash
+   git clone https://github.com/juan3625/recuperacion_nombre-pro-clientes.git
+   cd recuperacion_nombre-pro-clientes
+   ```
 
-### 1. Clona el repositorio
+2. Crea y activa un entorno virtual:
+   ```bash
+   python -m venv venv
+   source venv/Scripts/activate   # En Windows con Git Bash
+   ```
 
-```bash
-git clone https://github.com/juan3625/nombre-pro-clientes.git
-cd nombre-pro-clientes
-```
+3. Instala las dependencias:
+   ```bash
+   pip install -r requeriments.txt
+   ```
 
-### 2. Crea y activa el entorno virtual
+4. Ejecuta el servidor:
+   ```bash
+   uvicorn app.main:app --reload
+   ```
 
-```bash
-python -m venv venv
-./venv/Scripts/activate   # Windows
-source venv/bin/activate  # Mac/Linux
-```
+5. Abre en tu navegador la documentación interactiva de la API:
+   ```
+   http://127.0.0.1:8000/docs
+   ```
 
-### 3. Instala las dependencias
+## 📌 Endpoints principales
 
-```bash
-pip install -r requeriments.txt
-```
-
-### 4. Ejecuta el servidor
-
-Desde la carpeta raíz del proyecto:
-
-```bash
-fastapi dev app/main.py
-```
-
-Al iniciar, la aplicación crea automáticamente la base de datos y sus tablas (si no existen todavía) en `app/bd_clientes.squlite3`.
-
-### 5. Abre la documentación interactiva
-
-```
-http://127.0.0.1:8000/docs
-```
-
-Desde ahí puedes probar todos los endpoints directamente con la interfaz de **Swagger UI**.
-
----
-
-## 🔗 Endpoints disponibles
-
-### Clientes
-
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| GET | `/clientes` | Lista todos los clientes |
-| GET | `/clientes/{cliente_id}` | Obtiene un cliente por ID |
-| POST | `/clientes` | Crea un nuevo cliente |
-| PATCH | `/clientes/{cliente_id}` | Edita un cliente existente |
-| DELETE | `/clientes/{cliente_id}` | Elimina un cliente |
-
-### Facturas
-
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| GET | `/facturas` | Lista todas las facturas |
-| GET | `/facturas/{factura_id}` | Obtiene una factura por ID |
-| POST | `/facturas/{cliente_id}` | Crea una factura para un cliente |
-| PATCH | `/facturas/{id_factura}` | Edita una factura |
-| DELETE | `/facturas/{id_factura}` | Elimina una factura |
-
-### Transacciones
-
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| GET | `/transacciones` | Lista todas las transacciones |
-| GET | `/transacciones/{id}` | Obtiene una transacción por ID |
-| POST | `/transacciones/{factura_id}` | Crea una transacción asociada a una factura |
-| PATCH | `/transacciones/{id}` | Edita una transacción |
-| DELETE | `/transacciones/{id}` | Elimina una transacción |
-
----
-
-## 🗃️ Modelos de datos
-
-### Cliente
-```json
-{
-  "id": 1,
-  "nombre": "Juan Pérez",
-  "email": "juan@email.com",
-  "descripcion": "Cliente frecuente"
-}
-```
-
-### Factura
-```json
-{
-  "id": 1,
-  "fecha": "2026-06-22",
-  "cliente_id": 1,
-  "cliente": { ... },
-  "transacciones": [ ... ],
-  "vr_total": 150000.0
-}
-```
-
-### Transacción
-```json
-{
-  "id": 1,
-  "factura_id": 1,
-  "cantidad": 3,
-  "vr_unitario": 50000.0,
-  "descripcion": "Detalle de la transacción"
-}
-```
-
----
-
-## 🔁 Relaciones entre entidades
-
-- Un **Cliente** puede tener muchas **Facturas** (relación uno a muchos).
-- Una **Factura** puede tener muchas **Transacciones** (relación uno a muchos).
-- El campo `vr_total` de una **Factura** se calcula automáticamente como la suma de `cantidad * vr_unitario` de todas sus transacciones asociadas, mediante un `computed_field`.
-
----
-
-## 📝 Notas
-
-- Los datos se almacenan de forma persistente en una base de datos SQLite (`app/bd_clientes.squlite3`), no en memoria.
-- Las tablas se crean automáticamente al iniciar la aplicación (`crear_tablas` en `conexion_bd.py`), siempre y cuando no existan previamente. Si se modifica un modelo (por ejemplo, se agrega una nueva columna), es necesario eliminar el archivo de base de datos para que se regenere con la nueva estructura, ya que el proyecto aún no implementa migraciones (por ejemplo, con Alembic).
-
----
+| Recurso  | Método | Ruta                     | Descripción                          |
+|----------|--------|--------------------------|---------------------------------------|
+| Usuarios | GET    | `/usuarios`              | Listar todos los usuarios             |
+| Usuarios | GET    | `/usuarios/{id}`         | Obtener un usuario por ID             |
+| Usuarios | POST   | `/usuarios`              | Crear un nuevo usuario                |
+| Usuarios | PATCH  | `/usuarios/{id}`         | Actualizar un usuario                 |
+| Usuarios | DELETE | `/usuarios/{id}`         | Eliminar un usuario                   |
+| Órdenes  | GET    | `/ordenes`                | Listar todas las órdenes              |
+| Órdenes  | GET    | `/ordenes/{id}`           | Obtener una orden con sus ítems       |
+| Órdenes  | POST   | `/ordenes/{usuario_id}`   | Crear una orden para un usuario       |
+| Órdenes  | PATCH  | `/ordenes/{id}`           | Actualizar una orden                  |
+| Órdenes  | DELETE | `/ordenes/{id}`           | Eliminar una orden                    |
+| Ítems    | GET    | `/items`                  | Listar todos los ítems                |
+| Ítems    | GET    | `/items/{id}`             | Obtener un ítem por ID                |
+| Ítems    | POST   | `/items/{orden_id}`       | Crear un ítem dentro de una orden     |
+| Ítems    | PATCH  | `/items/{id}`             | Actualizar un ítem                    |
+| Ítems    | DELETE | `/items/{id}`             | Eliminar un ítem                      |
 
 ## 👤 Autor
 
-**juan3625** — [github.com/juan3625](https://github.com/juan3625) — Juan Felipe Zapata Torres
+Proyecto desarrollado por **Yeimy Padilla** como parte del proceso de formación del SENA — Plan de Mejoramiento.
