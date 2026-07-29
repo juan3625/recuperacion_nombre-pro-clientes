@@ -1,6 +1,6 @@
-from modelos.facturas import Factura    
-from modelos.clientes import Cliente   
-from modelos.transacciones import Transaccion  
+from app.modelos.ordenes import Factura    
+from app.modelos.usuarios import Cliente   
+from app.modelos.items_orden import Transaccion  
 
 
 lista_clientes:list[Cliente] = []
