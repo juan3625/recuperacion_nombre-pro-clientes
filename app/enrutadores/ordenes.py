@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status
 from app.modelos.ordenes import Orden, NuevaOrden, ModificarOrden, VerOrden, VerOrdenDetalle
 from app.modelos.usuarios import Usuario
-from app.conexion_bd import Session_dependencia
+from conexion_bd import Session_dependencia
 from sqlmodel import select
 
 api_ordenes = APIRouter()

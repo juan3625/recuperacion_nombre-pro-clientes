@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 from app.modelos.usuarios import Usuario, IngresarUsuario, ActualizarUsuario
-from app.conexion_bd import Session_dependencia
+from conexion_bd import Session_dependencia
 from sqlmodel import select
 
 api_usuarios = APIRouter()  
